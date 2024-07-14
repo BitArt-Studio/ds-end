@@ -1,0 +1,50 @@
+<html lang="en">
+    <head>
+        <meta ticker="ColorMask" opt="mint" hashseed="dBxo0jBAb2aGP3yb">
+        <style>
+            body {
+                margin: 0;
+                background: #000;
+                overflow: hidden;
+            }
+
+            canvas {
+                bottom: 0;
+                height: 100vw;
+                left: 0;
+                margin: auto;
+                max-height: 100vh;
+                max-width: 100vh;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 100vw;
+            }
+        </style>
+        <script type="module">
+            import*as fcompress from 'https://static-testnet.unisat.io/content/ad33b21ece6ae27004bfa2e23755c363366fa07ad2cceb914833767ee48c9523i0';
+            async function getBaseFile() {
+                const baser = await fetch('https://static-testnet.unisat.io/content/0f967c475f2deb2b17caaba7bc1c7b226d10160b1ec2fdb728442888446f3debi0');
+                const bases = await baser.text();
+                const base = fcompress.strFromU8(fcompress.gunzipSync(new Uint8Array(Array.from(atob(bases)).map((char)=>char.charCodeAt(0)))));
+                eval(base);
+            }
+            getBaseFile();
+        </script>
+        <script type="text/javascript" src="https://static-testnet.unisat.io/content/c4ee0f25398519230335cb9cfd4b4e5ed337c7cb7a7a56989182ff6d07e772b9i0"></script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <script type="text/javascript">
+            function setup() {
+                createCanvas(1200, 1200);
+                rectMode(CENTER);
+                initData('dBxo0jBAb2aGP3yb');
+            }
+            function draw() {
+                renderMain();
+            }
+        </script>
+    </body>
+</html>
+/content/ad33b21ece6ae27004bfa2e23755c363366fa07ad2cceb914833767ee48c9523i
