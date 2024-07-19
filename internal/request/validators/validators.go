@@ -6,8 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/thedevsaddam/govalidator"
-	"gohub/internal/request"
-	"gohub/pkg/config"
 	"gohub/pkg/logger"
 	"gohub/pkg/response"
 )
@@ -53,35 +51,4 @@ func ValidateData(data interface{}, rules govalidator.MapData, messages govalida
 	}
 	// 开始验证
 	return govalidator.New(opts).ValidateStruct()
-}
-
-// ValidatePage 自定义规则，验证分页参数
-func ValidatePage(pageReq request.PageReq, errs map[string][]string) map[string][]string {
-
-	maxPageSize := config.GetInt("page.max_page_size")
-	if pageReq.PageSize > maxPageSize {
-		errs["pageNo"] = append(errs["pageNo"], fmt.Sprintf("页码超出最大限制%d", maxPageSize))
-	}
-
-	fields := pageReq.Fields
-	orders := pageReq.Orders
-
-	if len(fields) != len(orders) {
-		errs["fields"] = append(errs["fields"], "fields 和 orders 长度不一致")
-	}
-
-	for _, field := range fields {
-		if field == "" {
-			errs["fields"] = append(errs["fields"], "fields 不能为空")
-			break
-		}
-	}
-
-	for _, order := range orders {
-		if order != "asc" && order != "desc" {
-			errs["orders"] = append(errs["orders"], "order 只能是 asc 或 desc")
-			break
-		}
-	}
-	return errs
 }

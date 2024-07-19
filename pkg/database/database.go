@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"gohub/internal/model"
+	"gohub/pkg/app"
 	"gohub/pkg/config"
 	"gohub/pkg/logger"
 	"gorm.io/driver/mysql"
+	gormlogger "gorm.io/gorm/logger"
 	"moul.io/zapgorm2"
 	"time"
 
@@ -57,6 +59,9 @@ func Connect(dbConfig gorm.Dialector) error {
 	log := zapgorm2.New(logger.LogZap)
 	log.IgnoreRecordNotFoundError = true
 	log.SetAsDefault()
+	if app.IsDebug() {
+		log.LogLevel = gormlogger.Info
+	}
 
 	// 使用 gorm.Open 连接数据库
 	var err error

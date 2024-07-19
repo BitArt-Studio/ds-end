@@ -36,6 +36,10 @@ func (c *ApiClient) mempoolRequest(method, subPath string, requestBody io.Reader
 	return Request(method, c.baseURL, subPath, requestBody, "")
 }
 
+func (c *ApiClient) mempoolBaseRequest(method, basePath string, requestBody io.Reader) ([]byte, error) {
+	return Request(method, basePath, "", requestBody, "")
+}
+
 func (c *ApiClient) unisatRequest(method, subPath string, requestBody io.Reader) ([]byte, error) {
 	return Request(method, c.unisatURL, subPath, requestBody, c.bearerToken)
 }

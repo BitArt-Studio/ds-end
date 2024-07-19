@@ -9,7 +9,7 @@ database:
     master:
       host: 127.0.0.1
       port: 3306
-      database: colormask
+      database: ds
       username: root
       password: 123456
       charset: utf8mb4
@@ -43,6 +43,13 @@ log:
   max_age: 0
   # 是否压缩，压缩日志不方便查看，我们设置为 false（压缩可节省空间）
   compress: false
+
+# 分页配置
+page:
+  # 默认每页条数
+  page_size: 10
+  # 最大每页条数
+  max_page_size: 1000
 
 file_base_path: storage/static/ # 文件存储路径
 

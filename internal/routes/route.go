@@ -41,6 +41,7 @@ func appRoutes(r *gin.RouterGroup) {
 	ocl := new(app.OrderController)
 	authGroup.POST("/save", ocl.Save)
 	authGroup.POST("/execute", ocl.Execute)
+	authGroup.GET("/page", ocl.Page)
 
 	seedGroup := r.Group("/seed")
 	scl := new(app.SeedController)

@@ -8,6 +8,7 @@ import (
 	"gohub/internal/request/validators"
 	"gohub/internal/service"
 	"gohub/pkg/logger"
+	"gohub/pkg/page"
 	"gohub/pkg/response"
 	"strconv"
 )
@@ -70,4 +71,51 @@ func (oc *OrderController) Execute(c *gin.Context) {
 			"InscriptionsId": orderDO.InscriptionsId,
 		})
 	}
+}
+
+func (oc *OrderController) Page(c *gin.Context) {
+	req := page.Req{}
+	if ok := validators.Validate(c, &req); !ok {
+		return
+	}
+
+	pageRes, err := orderService.PageOrder(req)
+
+	if err != nil {
+		logger.Errorv(err)
+		response.ErrorStr(c, "分页失败")
+	}
+
+	type PageResp struct {
+		PayAddress     string
+		Address        string
+		EstimateFee    int64
+		OrderId        int64
+		FeeRate        int64
+		HSeed          string
+		RevealTxHash   string
+		InscriptionsId string
+		UsdPrice       float64
+		BtcPrice       float64
+	}
+
+	r := page.Resp[PageResp]{}
+	r.Total = pageRes.Total
+	for i := range pageRes.List {
+		list := pageRes.List[i]
+		r.List = append(r.List, PageResp{
+			PayAddress:     list.PayAddress,
+			Address:        list.Address,
+			EstimateFee:    list.EstimateFee,
+			OrderId:        list.OrderId,
+			FeeRate:        list.FeeRate,
+			HSeed:          list.HSeed,
+			RevealTxHash:   list.RevealTxHash,
+			InscriptionsId: list.InscriptionsId,
+			UsdPrice:       list.UsdPrice,
+			BtcPrice:       list.BtcPrice,
+		})
+	}
+
+	response.SuccessData(c, r)
 }

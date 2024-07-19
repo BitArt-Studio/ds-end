@@ -105,6 +105,11 @@ func GetInt64(path string, defaultValue ...interface{}) int64 {
 	return cast.ToInt64(internalGet(path, defaultValue...))
 }
 
+// GetUint64 获取 Int64 类型的配置信息
+func GetUint64(path string, defaultValue ...interface{}) uint64 {
+	return cast.ToUint64(internalGet(path, defaultValue...))
+}
+
 // GetUint 获取 Uint 类型的配置信息
 func GetUint(path string, defaultValue ...interface{}) uint {
 	return cast.ToUint(internalGet(path, defaultValue...))

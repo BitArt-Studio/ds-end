@@ -6,6 +6,9 @@ app:
 bit:
   mode: testnet # 网络模式，可选：mainnet、testnet
 
+log:
+  level: info
+
 # 数据库配置
 database:
   # 默认数据库
@@ -23,8 +26,12 @@ database:
     max_open_connections: 25
     max_life_seconds: 300
 
-template_path: storage/template/insc_cm_testnet.html
+template_path: storage/template/test_nft.html
 
 service_fee:
   amount: 1000
   receive_address: tb1pclrhuqrlwr2ykdd2muhnnxg2t8umepdndmar5wc4ua0z5wn86qssstj6kj
+
+block_height_range:
+  start: 100
+  end: 1000000
