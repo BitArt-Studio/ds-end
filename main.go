@@ -23,7 +23,7 @@ func main() {
 		PersistentPreRun: func(command *cobra.Command, args []string) {
 
 			// 初始化
-			config.InitConfig("")
+			config.InitConfig(cmd.Env)
 			logger.InitLogger()
 			database.InitDB()
 			snowflakeP.InitSnowflake()
