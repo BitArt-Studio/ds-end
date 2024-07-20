@@ -3,7 +3,6 @@ package logger
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"gohub/pkg/app"
 	"gohub/pkg/config"
 	"os"
@@ -125,12 +124,8 @@ func Error(args ...any) {
 	Logger.Error(args)
 }
 
-type stackTracer interface {
-	StackTrace() errors.StackTrace
-}
-
 func Errorv(err error) {
-	_, ok := err.(stackTracer)
+	_, ok := err.(fmt.Formatter)
 	if ok {
 		Logger.Error(fmt.Printf("%+v", err))
 	} else {
