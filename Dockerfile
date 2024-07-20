@@ -1,5 +1,5 @@
 # 构建阶段
-FROM golang:alpine AS builder
+FROM golang AS builder
 # 构建可执行文件
 ENV CGO_ENABLED=0
 WORKDIR /build
