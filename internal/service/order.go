@@ -227,13 +227,13 @@ func (s *OrderService) ExecuteOrder(orderId int64) (*model.OrderDO, error) {
 	orderDO.InscriptionsId = inscriptionId
 	orderDO.Fees = fee
 	orderDO.Status = enum.OrderStatusComplete.Code
+	orderDO.BtcPrice = config.GetFloat64("service_fee.amount")
 
 	usd, err := btcapi.Client.BtcUSDPrice()
 	if err != nil {
 		return nil, err
 	}
-	orderDO.UsdPrice = usd * config.GetFloat64("service_fee.amount") / 1e8
-
+	orderDO.UsdPrice = usd * orderDO.BtcPrice / 1e8
 	err = dao.Transaction(func(tx *gorm.DB) error {
 		if err := orderDao.Tx(tx).New().Save(orderDO).Error; err != nil {
 			return errors.WithStack(err)
