@@ -28,6 +28,5 @@ ENV LANG=C.UTF-8
 # 暴露端口和卷
 EXPOSE 3000
 VOLUME /app/storage/logs
-VOLUME /app/application.yaml
 # 设置容器启动命令
 CMD ["./main"]
