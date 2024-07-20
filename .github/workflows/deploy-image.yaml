@@ -18,7 +18,7 @@ jobs:
         run: |
           docker build --file Dockerfile --tag registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest .
           docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
-          docker push registry.cn-zhangjiakou.aliyuncs.com/ds:latest
+          docker push registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
       - name: Pull image
         uses: appleboy/ssh-action@v0.1.10
         with:
