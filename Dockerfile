@@ -4,6 +4,7 @@ FROM golang AS builder
 ENV CGO_ENABLED=0
 WORKDIR /build
 ADD . .
+RUN go mod tidy
 RUN go build -o main
 
 # 运行阶段
