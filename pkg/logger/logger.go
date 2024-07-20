@@ -127,7 +127,7 @@ func Error(args ...any) {
 func Errorv(err error) {
 	_, ok := err.(fmt.Formatter)
 	if ok {
-		Logger.Error(err)
+		Logger.Errorf("%+v", err)
 	} else {
 		Logger.Error(err)
 	}

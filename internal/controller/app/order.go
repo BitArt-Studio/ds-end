@@ -67,8 +67,8 @@ func (oc *OrderController) Execute(c *gin.Context) {
 		}
 	} else {
 		response.SuccessData(c, gin.H{
-			"RevealTxHash":   orderDO.RevealTxHash,
-			"InscriptionsId": orderDO.InscriptionsId,
+			"revealTxHash":   orderDO.RevealTxHash,
+			"inscriptionsId": orderDO.InscriptionsId,
 		})
 	}
 }
@@ -87,17 +87,17 @@ func (oc *OrderController) Page(c *gin.Context) {
 	}
 
 	type PageResp struct {
-		ID             uint64
-		PayAddress     string
-		Address        string
-		EstimateFee    int64
-		OrderId        int64
-		FeeRate        int64
-		HSeed          string
-		RevealTxHash   string
-		InscriptionsId string
-		UsdPrice       float64
-		BtcPrice       float64
+		ID             uint64  `json:"id"`
+		PayAddress     string  `json:"payAddress"`
+		Address        string  `json:"address"`
+		EstimateFee    int64   `json:"estimateFee"`
+		OrderId        int64   `json:"orderId"`
+		FeeRate        int64   `json:"feeRate"`
+		HSeed          string  `json:"hSeed"`
+		RevealTxHash   string  `json:"revealTxHash"`
+		InscriptionsId string  `json:"inscriptionsId"`
+		UsdPrice       float64 `json:"usdPrice"`
+		BtcPrice       float64 `json:"btcPrice"`
 	}
 
 	r := page.Resp[PageResp]{}

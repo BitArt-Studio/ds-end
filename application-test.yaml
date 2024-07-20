@@ -6,6 +6,9 @@ app:
 bit:
   mode: testnet # 网络模式，可选：mainnet、testnet
 
+log:
+  level: info
+
 # 数据库配置
 database:
   # 默认数据库
