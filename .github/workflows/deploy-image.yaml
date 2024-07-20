@@ -16,9 +16,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build the Docker image
         run: |
-          docker build --file Dockerfile --tag registry-vpc.cn-hangzhou.aliyuncs.com/ds:latest .
-          docker login --username=煽风点火0 -p q619215399 registry-vpc.cn-hangzhou.aliyuncs.com
-          docker push registry-vpc.cn-hangzhou.aliyuncs.com/ds:latest
+          docker build --file Dockerfile --tag registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest .
+          docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
+          docker push registry.cn-zhangjiakou.aliyuncs.com/ds:latest
       - name: Pull image
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -28,6 +28,6 @@ jobs:
           port: 22 # 服务器端口，默认22
           script: | # 重启更新镜像
             docker stop ds-end
-            docker login --username=煽风点火0 -p q619215399 registry-vpc.cn-hangzhou.aliyuncs.com
-            docker pull registry-vpc.cn-hangzhou.aliyuncs.com/ds:latest
-            docker run -itd --rm --name ds-end -p 3000:3000 -v /project/colormask/logs:/app/storage/logs registry-vpc.cn-hangzhou.aliyuncs.com/ds:latest
+            docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
+            docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
+            docker run -itd --rm --name ds-end -p 3000:3000 -v /project/colormask/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
