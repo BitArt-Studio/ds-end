@@ -87,6 +87,7 @@ func (oc *OrderController) Page(c *gin.Context) {
 	}
 
 	type PageResp struct {
+		ID             uint64
 		PayAddress     string
 		Address        string
 		EstimateFee    int64
@@ -104,6 +105,7 @@ func (oc *OrderController) Page(c *gin.Context) {
 	for i := range pageRes.List {
 		list := pageRes.List[i]
 		r.List = append(r.List, PageResp{
+			ID:             list.ID,
 			PayAddress:     list.PayAddress,
 			Address:        list.Address,
 			EstimateFee:    list.EstimateFee,

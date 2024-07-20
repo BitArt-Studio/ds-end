@@ -1,33 +1,33 @@
 name: Deploy
 
-#on:
-#  push: # push 到主分支自动 发布
-#    branches: [ "main" ]
-#    paths-ignore: # 忽略一些不必要的文件
-#      - ".gitignore"
-#      - "README.md"
-#  pull_request:
-#    branches: [ "main" ]
-#
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Build the Docker image
-#        run: |
-#          docker build --file Dockerfile --tag registry.cn-zhangjiakou.aliyuncs.com/theheboy/cm-color:latest .
-#          docker login --username=煽风点火0 -p ${{ secrets.ALIYUN_PWD }} registry.cn-zhangjiakou.aliyuncs.com
-#          docker push registry.cn-zhangjiakou.aliyuncs.com/theheboy/cm-color:latest
-#      - name: Pull image
-#        uses: appleboy/ssh-action@v0.1.10
-#        with:
-#          host: ${{ secrets.SERVER_HOST }} # 服务器ip地址 ; 需要去仓库的 settings/secrets/actions 去创建
-#          username: ${{ secrets.SERVER_USER }} # 服务器用户名称；需要去仓库的 settings/secrets/actions 去创建
-#          password: ${{ secrets.SERVER_PWD }} # 服务器密码；需要去仓库的 settings/secrets/actions 去创建
-#          port: ${{ secrets.SERVER_PORT }} # 服务器端口，默认22；需要去仓库的 settings/secrets/actions 去创建
-#          script: | # 重启更新镜像
-#            docker stop cm-end
-#            docker login --username=煽风点火0 -p ${{ secrets.ALIYUN_PWD }} registry.cn-zhangjiakou.aliyuncs.com
-#            docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/cm-color:latest
-#            docker run -itd --rm --name cm-end -p 3000:3000 -v /project/colormask/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/cm-color:latest
+on:
+  push: # push 到主分支自动 发布
+    branches: [ "main" ]
+    paths-ignore: # 忽略一些不必要的文件
+      - ".gitignore"
+      - "README.md"
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build the Docker image
+        run: |
+          docker build --file Dockerfile --tag registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest .
+          docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
+          docker push registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
+      - name: Pull image
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 39.101.140.3 # 服务器ip地址
+          username: root # 服务器用户名称
+          password: 619215399@qq.COM # 服务器密码
+          port: 22 # 服务器端口，默认22
+          script: | # 重启更新镜像
+            docker stop ds-end
+            docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
+            docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
+            docker run -itd --rm --name ds-end -p 3000:3000 -v /project/colormask/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
