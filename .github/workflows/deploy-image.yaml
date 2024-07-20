@@ -30,4 +30,4 @@ jobs:
             docker stop ds-end
             docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
             docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
-            docker run -itd --rm --name ds-end -p 3000:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest --env=test
+            docker run -itd --rm --name ds-end -p 3000:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest ./main --env=test
