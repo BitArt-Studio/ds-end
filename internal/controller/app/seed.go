@@ -7,6 +7,7 @@ import (
 	"gohub/internal/service"
 	"gohub/pkg/logger"
 	"gohub/pkg/response"
+	"net/http"
 )
 
 type SeedController struct {
@@ -60,4 +61,16 @@ func (ctl *SeedController) GetSeedsByAddress(c *gin.Context) {
 			"hSeeds": hSeeds,
 		})
 	}
+}
+
+func (ctl *SeedController) SeedHtml(c *gin.Context) {
+	hSeed := c.Param("hSeed")
+	template, err := service.Seed.FillTemplate("storage/template/seed_nft.html", hSeed)
+	if err != nil {
+		logger.Errorv(err)
+		response.ErrorStr(c, "系统错误")
+	}
+	// 设置响应头
+	c.Header("Content-Type", "text/html")
+	c.String(http.StatusOK, string(template))
 }

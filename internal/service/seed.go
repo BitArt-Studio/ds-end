@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bytes"
 	"github.com/bwmarrin/snowflake"
 	"github.com/pkg/errors"
 	"gohub/internal/dao"
@@ -8,6 +9,7 @@ import (
 	"gohub/pkg/hashidsP"
 	"gohub/pkg/snowflakeP"
 	"gorm.io/gorm"
+	"html/template"
 	"math"
 	"math/rand"
 	"sync"
@@ -85,4 +87,21 @@ func (s *SeedService) GetSeedsByAddress(address string) ([]string, error) {
 	}
 
 	return hSeeds, nil
+}
+
+func (s *SeedService) FillTemplate(filePath, hSeed string) ([]byte, error) {
+	tmpl, err := template.ParseFiles(filePath)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	data := struct {
+		HSeed string
+	}{
+		HSeed: hSeed,
+	}
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return buf.Bytes(), nil
 }

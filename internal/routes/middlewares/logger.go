@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"gohub/pkg/logger"
 	"gohub/pkg/response"
 	"io"
@@ -73,20 +72,22 @@ func Logger() gin.HandlerFunc {
 			Errors:       c.Errors.ByType(gin.ErrorTypePrivate).String(),
 			Time:         fmt.Sprintf("%.3fms", float64(cost.Nanoseconds())/1e6),
 		}
-
 		if responseStatus == 200 {
-			// 尝试将响应体转换为 CommonResult
-			var commonResult response.CommonResult
-			err := json.Unmarshal(w.body.Bytes(), &commonResult)
-			if err == nil {
-				logFields.Code = commonResult.Code
-				if commonResult.Code == 200 {
-					logger.Debug("HTTP Request:", logFields)
+			contentType := c.Writer.Header().Get("Content-Type")
+			if contentType == "application/json" {
+				// 尝试将响应体转换为 CommonResult
+				var commonResult response.CommonResult
+				err := json.Unmarshal(w.body.Bytes(), &commonResult)
+				if err == nil {
+					logFields.Code = commonResult.Code
+					if commonResult.Code == 200 {
+						logger.Debug("HTTP Request:", logFields)
+					} else {
+						logger.Warn("HTTP Request:", logFields)
+					}
 				} else {
-					logger.Warn("HTTP Request:", logFields)
+					logger.Errorv(err)
 				}
-			} else {
-				logger.Errorv(errors.WithStack(err))
 			}
 		} else {
 			logger.Warn("HTTP Request:", logFields)

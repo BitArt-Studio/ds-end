@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bytes"
 	"encoding/hex"
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcutil"
@@ -20,7 +19,6 @@ import (
 	"gohub/pkg/page"
 	"gohub/pkg/snowflakeP"
 	"gorm.io/gorm"
-	"html/template"
 	"net/http"
 	"strings"
 	"time"
@@ -292,20 +290,7 @@ func (s *OrderService) updateHSeed(fileData []byte) (*btcec.PrivateKey, *btcutil
 
 func (s *OrderService) fillTemplate(hSeed string) ([]byte, error) {
 	filePath := config.GetString("template_path")
-	tmpl, err := template.ParseFiles(filePath)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	data := struct {
-		HSeed string
-	}{
-		HSeed: hSeed,
-	}
-	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, data); err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return buf.Bytes(), nil
+	return Seed.FillTemplate(filePath, hSeed)
 }
 
 func (s *OrderService) estimateFee(privateKey *btcec.PrivateKey, receiveAddress string, fileData []byte, feeRate int64) (int64, error) {

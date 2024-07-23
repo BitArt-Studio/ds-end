@@ -48,6 +48,7 @@ func appRoutes(r *gin.RouterGroup) {
 	seedGroup.GET("/randomUsableSeed", scl.RandomUsableSeed)
 	seedGroup.GET("/usedTempSeed", scl.UsedTempSeed)
 	seedGroup.GET("/address", scl.GetSeedsByAddress)
+	seedGroup.GET("/seedHTML/:hSeed", scl.SeedHtml)
 
 	whiteListGroup := r.Group("/whitelist")
 	wcl := new(app.WhiteListController)
