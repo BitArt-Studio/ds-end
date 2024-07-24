@@ -15,7 +15,7 @@ type OrderDO struct {
 	RevealTxHash   string  `gorm:"column:revealTxHash" json:"revealTxHash"`
 	InscriptionsId string  `gorm:"column:inscriptionsId" json:"inscriptionsId"`
 	UsdPrice       float64 `gorm:"column:usdPrice" json:"usdPrice"`
-	BtcPrice       float64 `gorm:"column:btcPrice" json:"btcPrice"`
+	BtcPrice       int64   `gorm:"column:btcPrice" json:"btcPrice"`
 	CommonTimestampsField
 }
 

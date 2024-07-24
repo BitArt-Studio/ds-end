@@ -97,7 +97,7 @@ func (oc *OrderController) Page(c *gin.Context) {
 		RevealTxHash   string  `json:"revealTxHash"`
 		InscriptionsId string  `json:"inscriptionsId"`
 		UsdPrice       float64 `json:"usdPrice"`
-		BtcPrice       float64 `json:"btcPrice"`
+		BtcPrice       int64   `json:"btcPrice"`
 	}
 
 	r := page.Resp[PageResp]{}
