@@ -14,16 +14,7 @@ import (
 type Response struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
-	Data Data   `json:"data"`
-}
-
-type Data struct {
-	Cursor                int    `json:"cursor"`
-	Total                 int    `json:"total"`
-	TotalConfirmed        int    `json:"totalConfirmed"`
-	TotalUnconfirmed      int    `json:"totalUnconfirmed"`
-	TotalUnconfirmedSpend int    `json:"totalUnconfirmedSpend"`
-	Utxo                  []Utxo `json:"utxo"`
+	Data any    `json:"data"`
 }
 
 type Utxo struct {
@@ -52,6 +43,16 @@ type Inscription struct {
 type UTXOs []Response
 
 func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, error) {
+
+	type Data struct {
+		Cursor                int    `json:"cursor"`
+		Total                 int    `json:"total"`
+		TotalConfirmed        int    `json:"totalConfirmed"`
+		TotalUnconfirmed      int    `json:"totalUnconfirmed"`
+		TotalUnconfirmedSpend int    `json:"totalUnconfirmedSpend"`
+		Utxo                  []Utxo `json:"utxo"`
+	}
+
 	res, err := c.unisatRequest(http.MethodGet, fmt.Sprintf("/address/%s/utxo-data?cursor=%d&size=%d", address.EncodeAddress(), 0, 16), nil)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -64,7 +65,11 @@ func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, erro
 	}
 
 	unspentOutputs := make([]*UnspentOutput, 0)
-	for _, utxo := range resData.Data.Utxo {
+	data, ok := resData.Data.(Data)
+	if !ok {
+		return nil, errors.New("failed to parse data")
+	}
+	for _, utxo := range data.Utxo {
 		txHash, err := chainhash.NewHashFromStr(utxo.Txid)
 		if err != nil {
 			return nil, err
@@ -80,4 +85,24 @@ func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, erro
 		})
 	}
 	return unspentOutputs, nil
+}
+
+func (c *ApiClient) GetSAddressByInscriptionId(inscriptionId string) (string, error) {
+	res, err := c.unisatRequest(http.MethodGet, fmt.Sprintf("/inscription/info/%s", inscriptionId), nil)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	var resData Response
+	err = json.Unmarshal(res, &resData)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	dataMap, ok := resData.Data.(map[string]interface{})
+	if !ok {
+		return "", errors.New("failed to parse data")
+	}
+
+	return dataMap["address"].(string), nil
 }
