@@ -1,0 +1,37 @@
+app:
+  port: 3000
+  # 是否进入调试模式
+  debug: false
+
+bit:
+  mode: mainnet # 网络模式，可选：mainnet、testnet
+
+log:
+  level: info
+
+# 数据库配置
+database:
+  # 默认数据库
+  connection: mysql
+  mysql:
+    master:
+      host: 43.133.76.72
+      port: 3306
+      database: ds_main
+      username: ds_main
+      password: RNjWrWiekiccTfza
+      charset: utf8mb4
+    # 连接池配置
+    max_idle_connections: 100
+    max_open_connections: 25
+    max_life_seconds: 300
+
+template_path: storage/template/test_nft.html
+
+service_fee:
+  amount: 80000
+  receive_address: tb1p588cfjvg4d6hchnuslzx6zhchzq3ht4csqmfeafhvqn5g680c74s89day6
+
+block_height_range:
+  start: 100
+  end: 1000000

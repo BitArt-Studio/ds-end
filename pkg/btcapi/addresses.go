@@ -8,6 +8,7 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/pkg/errors"
+	"gohub/pkg/logger"
 	"net/http"
 )
 
@@ -39,8 +40,21 @@ type Inscription struct {
 	Offset            int    `json:"offset"`
 }
 
-// UTXOs is a slice of UTXO
-type UTXOs []Response
+type Brc20Detail struct {
+	Address                string `json:"address"`
+	OverallBalance         string `json:"overallBalance"`
+	TransferableBalance    string `json:"transferableBalance"`
+	AvailableBalance       string `json:"availableBalance"`
+	AvailableBalanceSafe   string `json:"availableBalanceSafe"`
+	AvailableBalanceUnSafe string `json:"availableBalanceUnSafe"`
+}
+
+type Brc20PageResponse struct {
+	Height int           `json:"height"`
+	Total  int           `json:"total"`
+	Start  int           `json:"start"`
+	Detail []Brc20Detail `json:"detail"`
+}
 
 func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, error) {
 
@@ -61,6 +75,7 @@ func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, erro
 	var resData Response
 	err = json.Unmarshal(res, &resData)
 	if err != nil {
+		logger.Error(string(res))
 		return nil, errors.WithStack(err)
 	}
 
@@ -96,6 +111,7 @@ func (c *ApiClient) GetSAddressByInscriptionId(inscriptionId string) (string, er
 	var resData Response
 	err = json.Unmarshal(res, &resData)
 	if err != nil {
+		logger.Error(string(res))
 		return "", errors.WithStack(err)
 	}
 
@@ -105,4 +121,33 @@ func (c *ApiClient) GetSAddressByInscriptionId(inscriptionId string) (string, er
 	}
 
 	return dataMap["address"].(string), nil
+}
+
+func (c *ApiClient) GetBrc20Page(ticker string, start int, limit int) (*Brc20PageResponse, error) {
+	res, err := c.unisatRequest(http.MethodGet, fmt.Sprintf("/brc20/%s/holders?start=%d&limit=%d", ticker, start, limit), nil)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	var resData Response
+	err = json.Unmarshal(res, &resData)
+	if err != nil {
+		logger.Error(string(res))
+		return nil, errors.WithStack(err)
+	}
+
+	var page Brc20PageResponse
+	dataBytes, err := json.Marshal(resData.Data)
+	if err != nil {
+		logger.Error(resData.Data)
+		return nil, errors.New("failed to marshal data")
+	}
+
+	err = json.Unmarshal(dataBytes, &page)
+	if err != nil {
+		logger.Error(string(dataBytes))
+		return nil, errors.New("failed to parse data")
+	}
+
+	return &page, nil
 }

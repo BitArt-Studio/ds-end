@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/spf13/cobra"
 	"gohub/internal/dao"
 	"gohub/internal/model"
@@ -26,6 +27,30 @@ type Data struct {
 }
 
 func runWhiteList(cmd *cobra.Command, args []string) {
+	slice2 := synePizza()
+	slice1 := syncFile()
+
+	uniqueMap := make(map[string]model.WhiteListDO)
+
+	for _, item := range slice1 {
+		uniqueMap[item.Address] = item
+	}
+
+	for _, item := range slice2 {
+		uniqueMap[item.Address] = item
+	}
+
+	uniqueSlice := make([]model.WhiteListDO, 0, len(uniqueMap))
+	for _, item := range uniqueMap {
+		uniqueSlice = append(uniqueSlice, item)
+	}
+
+	if err := dao.WhiteList.New().CreateInBatches(uniqueSlice, len(uniqueSlice)).Error; err != nil {
+		console.Exit(err.Error())
+	}
+}
+
+func syncFile() []model.WhiteListDO {
 	// 打开 JSON 文件
 	jsonFile, err := os.Open("white_list_cm.json")
 	if err != nil {
@@ -67,15 +92,50 @@ func runWhiteList(cmd *cobra.Command, args []string) {
 		count++
 		console.Success("count:" + strconv.Itoa(count) + " address: " + address + " inscriptionId: " + k)
 	}
-	whiteListDos := make([]*model.WhiteListDO, 0)
+	whiteListDos := make([]model.WhiteListDO, 0)
 	for k, _ := range whiteListMap {
-		whiteListDos = append(whiteListDos, &model.WhiteListDO{
+		whiteListDos = append(whiteListDos, model.WhiteListDO{
 			Address: k,
 			Used:    false,
 		})
 	}
 
-	if err = dao.WhiteList.New().CreateInBatches(whiteListDos, len(whiteListDos)).Error; err != nil {
-		console.Exit(err.Error())
+	return whiteListDos
+}
+
+func synePizza() []model.WhiteListDO {
+	whiteListDos := make([]model.WhiteListDO, 0)
+
+	start := 0
+	limit := 500
+	total := 0
+	for {
+		page, err := btcapi.Client.GetBrc20Page("PIZZA", start, limit)
+		if err != nil {
+			console.Exit(err.Error())
+		}
+		total = page.Total
+		for _, brc20 := range page.Detail {
+			spew.Dump(brc20)
+
+			float, err := strconv.ParseFloat(brc20.AvailableBalance, 64)
+			if err != nil {
+				console.Exit(err.Error())
+			}
+			if float >= 300 {
+				whiteListDos = append(whiteListDos, model.WhiteListDO{
+					Address: brc20.Address,
+					Used:    false,
+				})
+			}
+		}
+
+		if start >= total {
+			break
+		}
+		start += limit
 	}
+	spew.Dump(whiteListDos)
+
+	return whiteListDos
 }
