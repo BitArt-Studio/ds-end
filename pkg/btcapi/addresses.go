@@ -8,6 +8,7 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/pkg/errors"
+	"github.com/tidwall/gjson"
 	"gohub/pkg/logger"
 	"net/http"
 )
@@ -19,25 +20,17 @@ type Response struct {
 }
 
 type Utxo struct {
-	Address      string        `json:"address"`
-	CodeType     int           `json:"codeType"`
-	Height       int           `json:"height"`
-	Idx          int           `json:"idx"`
-	Inscriptions []Inscription `json:"inscriptions"`
-	IsOpInRBF    bool          `json:"isOpInRBF"`
-	Satoshi      int64         `json:"satoshi"`
-	ScriptPk     string        `json:"scriptPk"`
-	ScriptType   string        `json:"scriptType"`
-	Txid         string        `json:"txid"`
-	Vout         int           `json:"vout"`
-}
-
-type Inscription struct {
-	InscriptionId     string `json:"inscriptionId"`
-	InscriptionNumber int    `json:"inscriptionNumber"`
-	IsBRC20           bool   `json:"isBRC20"`
-	Moved             bool   `json:"moved"`
-	Offset            int    `json:"offset"`
+	Address      string `json:"address"`
+	CodeType     int    `json:"codeType"`
+	Height       int    `json:"height"`
+	Idx          int    `json:"idx"`
+	Inscriptions []any  `json:"inscriptions"`
+	IsOpInRBF    bool   `json:"isOpInRBF"`
+	Satoshi      int64  `json:"satoshi"`
+	ScriptPk     string `json:"scriptPk"`
+	ScriptType   string `json:"scriptType"`
+	Txid         string `json:"txid"`
+	Vout         int    `json:"vout"`
 }
 
 type Brc20Detail struct {
@@ -57,52 +50,37 @@ type Brc20PageResponse struct {
 }
 
 func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, error) {
-
-	type Data struct {
-		Cursor                int    `json:"cursor"`
-		Total                 int    `json:"total"`
-		TotalConfirmed        int    `json:"totalConfirmed"`
-		TotalUnconfirmed      int    `json:"totalUnconfirmed"`
-		TotalUnconfirmedSpend int    `json:"totalUnconfirmedSpend"`
-		Utxo                  []Utxo `json:"utxo"`
-	}
-
 	res, err := c.unisatRequest(http.MethodGet, fmt.Sprintf("/address/%s/utxo-data?cursor=%d&size=%d", address.EncodeAddress(), 0, 16), nil)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	var resData Response
-	err = json.Unmarshal(res, &resData)
-	if err != nil {
-		logger.Error(string(res))
-		return nil, errors.WithStack(err)
+	jsonStr := string(res)
+	if gjson.Get(jsonStr, "code").Int() != 0 {
+		return nil, errors.New("API returned an error")
 	}
 
 	unspentOutputs := make([]*UnspentOutput, 0)
-	data, ok := resData.Data.(Data)
-	if !ok {
-		return nil, errors.New("failed to parse data")
-	}
-	for _, utxo := range data.Utxo {
-		txHash, err := chainhash.NewHashFromStr(utxo.Txid)
+	utxos := gjson.Get(jsonStr, "data.utxo").Array()
+	for _, utxo := range utxos {
+		txHash, err := chainhash.NewHashFromStr(utxo.Get("txid").String())
 		if err != nil {
 			return nil, err
 		}
-		scriptPk, err := hex.DecodeString(utxo.ScriptPk)
+		scriptPk, err := hex.DecodeString(utxo.Get("scriptPk").String())
 		if err != nil {
 			return nil, err
 		}
 
 		unspentOutputs = append(unspentOutputs, &UnspentOutput{
-			Outpoint: wire.NewOutPoint(txHash, uint32(utxo.Vout)),
-			Output:   wire.NewTxOut(utxo.Satoshi, scriptPk),
+			Outpoint: wire.NewOutPoint(txHash, uint32(utxo.Get("vout").Int())),
+			Output:   wire.NewTxOut(utxo.Get("satoshi").Int(), scriptPk),
 		})
 	}
 	return unspentOutputs, nil
 }
 
-func (c *ApiClient) GetSAddressByInscriptionId(inscriptionId string) (string, error) {
+func (c *ApiClient) GetAddressByInscriptionId(inscriptionId string) (string, error) {
 	res, err := c.unisatRequest(http.MethodGet, fmt.Sprintf("/inscription/info/%s", inscriptionId), nil)
 	if err != nil {
 		return "", errors.WithStack(err)

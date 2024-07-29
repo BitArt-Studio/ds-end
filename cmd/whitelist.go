@@ -84,7 +84,7 @@ func syncFile() []model.WhiteListDO {
 	count := 1
 	whiteListMap := make(map[string]string)
 	for k, _ := range dataMap {
-		address, err := btcapi.Client.GetSAddressByInscriptionId(k)
+		address, err := btcapi.Client.GetAddressByInscriptionId(k)
 		if err != nil {
 			console.Exit(err.Error())
 		}
