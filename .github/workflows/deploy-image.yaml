@@ -22,13 +22,13 @@ jobs:
       - name: Pull image
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: 39.101.140.3 # 服务器ip地址
+          host: 43.133.76.72 # 服务器ip地址
           username: root # 服务器用户名称
-          password: 619215399@qq.COM # 服务器密码
+          password: Mm88439412@ # 服务器密码
           port: 22 # 服务器端口，默认22
           script: | # 重启更新镜像
             docker stop ds-end
             docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
             docker rmi registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
             docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
-            docker run -itd --rm --name ds-end -p 3000:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest ./main --env=test
+            docker run -itd --rm --name ds-end -p 3001:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest ./main --env=test
