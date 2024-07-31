@@ -272,8 +272,7 @@ func (s *OrderService) checkBlockHeight() error {
 		return err
 	}
 
-	if config.GetUint64("block_height_range.start") >= height &&
-		config.GetUint64("block_height_range.end") <= height {
+	if !(height >= config.GetUint64("block_height_range.start") && height <= config.GetUint64("block_height_range.end")) {
 		return errors.WithStack(errorI.OrderStopMint)
 	}
 
