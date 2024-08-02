@@ -52,6 +52,7 @@ func (s *SeedService) generateShortID(node *snowflake.Node) int64 {
 }
 
 func (s *SeedService) RandomUsableSeed(address string) (string, error) {
+	address = dealAddress(address)
 	hSeed, err := hashidsP.HashID.EncodeInt64([]int64{s.generateShortID(snowflakeP.Node)})
 	if err != nil {
 		return "", errors.WithStack(err)
@@ -76,6 +77,7 @@ func (s *SeedService) useSeed(tx *gorm.DB, hSeed string, address string) error {
 }
 
 func (s *SeedService) UsedTempSeed(address string) string {
+	address = dealAddress(address)
 	return usedTempSeeds[address]
 }
 
