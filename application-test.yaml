@@ -15,11 +15,11 @@ database:
   connection: mysql
   mysql:
     master:
-      host: 39.101.140.3
+      host: 43.133.76.72
       port: 3306
-      database: ds
-      username: root
-      password: K59D9E357b60Ea3c
+      database: ds_test
+      username: ds_test
+      password: 8c3JwskPtMEyhtcZ
       charset: utf8mb4
     # 连接池配置
     max_idle_connections: 100
