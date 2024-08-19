@@ -34,4 +34,4 @@ service_fee:
 
 block_height_range:
   start: 2870783
-  end: 2872700
+  end: 3871600
