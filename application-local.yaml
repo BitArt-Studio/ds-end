@@ -33,5 +33,5 @@ service_fee:
   receive_address: tb1p588cfjvg4d6hchnuslzx6zhchzq3ht4csqmfeafhvqn5g680c74s89day6
 
 block_height_range:
-  start: 100
-  end: 1000000
+  start: 2870783
+  end: 3871600
