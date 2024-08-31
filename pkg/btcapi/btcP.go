@@ -13,13 +13,8 @@ var (
 )
 
 func InitBtc() {
-	mode := config.Get("bit.mode")
-	NetParams = &chaincfg.TestNet3Params
-	if mode == "mainnet" {
-		NetParams = &chaincfg.MainNetParams
-	}
-	Client = NewClient(NetParams, config.Get("unisat_api_key"))
-
+	NetParams = &chaincfg.MainNetParams
+	Client = NewClient()
 	addressStr := config.Get("service_fee.receive_address")
 
 	var err error

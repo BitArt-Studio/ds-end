@@ -61,7 +61,6 @@ func (s *OrderService) Save(req app.OrderCreateReq) (*model.OrderDO, error) {
 
 		// 重新生成私钥
 		if orderDO.HSeed != hSeed {
-			logger.Infof("update hSeed before: %+v", orderDO)
 			orderDO.HSeed = hSeed
 
 			privateKey, taprootAddress, err := s.updateHSeed(fileData)

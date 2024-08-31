@@ -1,10 +1,9 @@
 package btcapi
 
 import (
-	"github.com/btcsuite/btcd/chaincfg"
-	"github.com/btcsuite/btcd/wire"
+	"gohub/pkg/app"
+	"gohub/pkg/config"
 	"io"
-	"log"
 )
 
 type ApiClient struct {
@@ -13,22 +12,20 @@ type ApiClient struct {
 	bearerToken string
 }
 
-func NewClient(netParams *chaincfg.Params, bearerToken string) *ApiClient {
+func NewClient() *ApiClient {
 	baseURL := ""
 	unisatURL := ""
-	if netParams.Net == wire.MainNet {
+	if app.IsProduction() {
 		baseURL = "https://mempool.space/api"
 		unisatURL = "https://open-api.unisat.io/v1/indexer"
-	} else if netParams.Net == wire.TestNet3 {
-		baseURL = "https://mempool.space/testnet/api"
-		unisatURL = "https://open-api-testnet.unisat.io/v1/indexer"
 	} else {
-		log.Fatal("don't support other netParams")
+		baseURL = "https://mempool-testnet.fractalbitcoin.io/api"
+		unisatURL = "https://open-api-fractal-testnet.unisat.io/v1/indexer"
 	}
 	return &ApiClient{
 		baseURL:     baseURL,
 		unisatURL:   unisatURL,
-		bearerToken: bearerToken,
+		bearerToken: config.Get("unisat_api_key"),
 	}
 }
 

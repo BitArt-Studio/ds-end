@@ -30,8 +30,8 @@ template_path: storage/template/test_nft.html
 
 service_fee:
   amount: 80000
-  receive_address: tb1p588cfjvg4d6hchnuslzx6zhchzq3ht4csqmfeafhvqn5g680c74s89day6
+  receive_address: bc1pq93rmmn5v2kyj5mqvftu8pshm3tmccen8jhcsqrjwnhtjm7p0f8spuqa74
 
 block_height_range:
-  start: 2870783
-  end: 3871600
+  start: 0
+  end: 5871600

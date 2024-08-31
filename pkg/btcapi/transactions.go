@@ -16,7 +16,6 @@ func (c *ApiClient) BroadcastTx(tx *wire.MsgTx) (*chainhash.Hash, error) {
 	if err := tx.Serialize(&buf); err != nil {
 		return nil, err
 	}
-
 	res, err := c.mempoolRequest(http.MethodPost, "/tx", strings.NewReader(hex.EncodeToString(buf.Bytes())))
 	if err != nil {
 		return nil, err

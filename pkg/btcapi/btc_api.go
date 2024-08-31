@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type UnspentOutput struct {
@@ -27,7 +28,11 @@ func Request(method, baseURL, subPath string, requestBody io.Reader, bearerToken
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create Request")
 	}
-	req.Header.Add("Content-Type", "application/json")
+	if strings.HasSuffix(url, "tx") {
+		req.Header.Add("Content-Type", "text/plain")
+	} else {
+		req.Header.Add("Content-Type", "application/json")
+	}
 	req.Header.Add("Accept", "application/json")
 	if bearerToken != "" {
 		req.Header.Add("Authorization", "Bearer "+bearerToken)

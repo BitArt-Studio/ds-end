@@ -57,7 +57,7 @@ func (c *ApiClient) ListUnspent(address btcutil.Address) ([]*UnspentOutput, erro
 
 	jsonStr := string(res)
 	if gjson.Get(jsonStr, "code").Int() != 0 {
-		return nil, errors.New("API returned an error")
+		return nil, errors.New(jsonStr)
 	}
 
 	unspentOutputs := make([]*UnspentOutput, 0)

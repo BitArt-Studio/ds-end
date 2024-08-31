@@ -13,6 +13,7 @@ import (
 	"github.com/btcsuite/btcd/wire"
 	"github.com/pkg/errors"
 	"gohub/pkg/btcapi"
+	"strings"
 )
 
 type InscriptionData struct {
@@ -101,7 +102,7 @@ func createInscriptionTxCtxData(net *chaincfg.Params, privateKey *btcec.PrivateK
 		// Therefore, we use two OP_DATA_1 to maintain consistency with go-ord-tx.
 		AddOp(txscript.OP_DATA_1).
 		AddOp(txscript.OP_DATA_1).
-		AddData([]byte(data.ContentType)).
+		AddData([]byte(strings.ReplaceAll(data.ContentType, " ", ""))).
 		AddOp(txscript.OP_0)
 	maxChunkSize := 520
 	bodySize := len(data.Body)
