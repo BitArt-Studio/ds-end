@@ -31,4 +31,4 @@ jobs:
             docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
             docker rmi registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
             docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
-            docker run -itd --rm --name ds-end -p 3001:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest ./main --env=test
+            docker run -itd --name ds-end -p 3001:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest ./main --env=test

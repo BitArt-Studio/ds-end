@@ -73,21 +73,18 @@ func Logger() gin.HandlerFunc {
 			Time:         fmt.Sprintf("%.3fms", float64(cost.Nanoseconds())/1e6),
 		}
 		if responseStatus == 200 {
-			contentType := c.Writer.Header().Get("Content-Type")
-			if contentType == "application/json" {
-				// 尝试将响应体转换为 CommonResult
-				var commonResult response.CommonResult
-				err := json.Unmarshal(w.body.Bytes(), &commonResult)
-				if err == nil {
-					logFields.Code = commonResult.Code
-					if commonResult.Code == 200 {
-						logger.Debug("HTTP Request:", logFields)
-					} else {
-						logger.Warn("HTTP Request:", logFields)
-					}
+			// 尝试将响应体转换为 CommonResult
+			var commonResult response.CommonResult
+			err := json.Unmarshal(w.body.Bytes(), &commonResult)
+			if err == nil {
+				logFields.Code = commonResult.Code
+				if commonResult.Code == 200 {
+					logger.Debug("HTTP Request:", logFields)
 				} else {
-					logger.Errorv(err)
+					logger.Warn("HTTP Request:", logFields)
 				}
+			} else {
+				logger.Errorv(err)
 			}
 		} else {
 			logger.Warn("HTTP Request:", logFields)
