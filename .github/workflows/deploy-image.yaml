@@ -29,6 +29,7 @@ jobs:
           script: | # 重启更新镜像
             docker stop ds-end
             docker login --username=煽风点火0 -p q619215399 registry.cn-zhangjiakou.aliyuncs.com
+            docker rm ds-end
             docker rmi registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
             docker pull registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest
             docker run -itd --name ds-end -p 3001:3000 -v /project/ds/logs:/app/storage/logs registry.cn-zhangjiakou.aliyuncs.com/theheboy/ds:latest ./main --env=test
