@@ -39,16 +39,16 @@ func RegisterAPIRoutes(r *gin.Engine) {
 func appRoutes(r *gin.RouterGroup) {
 	authGroup := r.Group("/order")
 	ocl := new(app.OrderController)
-	authGroup.POST("/save", ocl.Save)
-	authGroup.POST("/execute", ocl.Execute)
-	authGroup.GET("/page", ocl.Page)
+	authGroup.POST("/save", middlewares.LimitIP("60-H"), ocl.Save)
+	authGroup.POST("/execute", middlewares.LimitIP("60-H"), ocl.Execute)
+	authGroup.GET("/page", middlewares.LimitIP("60-H"), ocl.Page)
 
 	seedGroup := r.Group("/seed")
 	scl := new(app.SeedController)
-	seedGroup.GET("/randomUsableSeed", scl.RandomUsableSeed)
-	seedGroup.GET("/usedTempSeed", scl.UsedTempSeed)
-	seedGroup.GET("/address", scl.GetSeedsByAddress)
-	seedGroup.GET("/seedHTML/:hSeed", scl.SeedHtml)
+	seedGroup.GET("/randomUsableSeed", middlewares.LimitIP("60-H"), scl.RandomUsableSeed)
+	seedGroup.GET("/usedTempSeed", middlewares.LimitIP("60-H"), scl.UsedTempSeed)
+	seedGroup.GET("/address", middlewares.LimitIP("60-H"), scl.GetSeedsByAddress)
+	seedGroup.GET("/seedHTML/:hSeed", middlewares.LimitIP("60-H"), scl.SeedHtml)
 
 	whiteListGroup := r.Group("/whitelist")
 	wcl := new(app.WhiteListController)

@@ -57,3 +57,7 @@ func errorCode(c *gin.Context, code int, err error) {
 func Error405(c *gin.Context, err error) {
 	errorCode(c, 405, err)
 }
+
+func Error500(c *gin.Context, err error) {
+	errorCode(c, 500, err)
+}
